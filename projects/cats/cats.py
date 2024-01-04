@@ -224,23 +224,30 @@ def minimum_mewtations(typed, source, limit):
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
-    assert False, 'Remove this line'
-    if ___________: # Base cases should go here, you may add more base cases as needed.
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
-    # Recursive cases should go below here
-    if ___________: # Feel free to remove or add additional cases
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
-    else:
-        add = ... # Fill in these lines
-        remove = ...
-        substitute = ...
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
+    if typed == source:
+        return 0
+    if typed == "":
+        return len(source)
+    if source == "":
+        return len(typed)
+
+    def edit_distance(i, j, k):
+        if k < 0:
+            return limit + 1
+        if i == 0:
+            return j
+        if j == 0:
+            return i
+        if typed[i - 1] == source[j - 1]:
+            return edit_distance(i - 1, j - 1, k)
+
+        return min(
+            edit_distance(i - 1, j, k - 1),     # deletion
+            edit_distance(i, j - 1, k - 1),     # insertion
+            edit_distance(i - 1, j - 1, k - 1), # substitution
+        ) + 1
+
+    return edit_distance(len(typed), len(source), limit)
 
 
 def final_diff(typed, source, limit):
@@ -280,7 +287,16 @@ def report_progress(typed, source, user_id, upload):
     0.2
     """
     # BEGIN PROBLEM 8
-    "*** YOUR CODE HERE ***"
+    correct, i = 0, 0
+    while i < len(typed):
+        if typed[i] != source[i]:
+            break
+        correct += 1
+        i += 1
+    progress = correct / len(source)
+    payload = {"id": user_id, "progress": progress}
+    upload(payload)
+    return progress
     # END PROBLEM 8
 
 
@@ -302,7 +318,17 @@ def time_per_word(words, timestamps_per_player):
     [[6, 3, 6, 2], [10, 6, 1, 2]]
     """
     # BEGIN PROBLEM 9
-    "*** YOUR CODE HERE ***"
+    durations_per_player = []
+    i = 0
+    while i < len(timestamps_per_player):
+        durations = []
+        j = 1
+        while j < len(timestamps_per_player[i]):
+            durations.append(timestamps_per_player[i][j] - timestamps_per_player[i][j - 1])
+            j += 1
+        durations_per_player.append(durations)
+        i += 1
+    return match(words, durations_per_player)
     # END PROBLEM 9
 
 
@@ -324,7 +350,19 @@ def fastest_words(match):
     player_indices = range(len(get_all_times(match)))  # contains an *index* for each player
     word_indices = range(len(get_all_words(match)))    # contains an *index* for each word
     # BEGIN PROBLEM 10
-    "*** YOUR CODE HERE ***"
+    result = [[] for _ in player_indices]
+
+    for i in word_indices:
+        fastest_player, fastest_time = 0, maxsize
+        for j in player_indices:
+            current_time = time(match, j ,i)
+            if current_time < fastest_time:
+                fastest_player, fastest_time = j, current_time
+
+        word = get_word(match, i)
+        result[fastest_player].append(word)
+
+    return result
     # END PROBLEM 10
 
 
