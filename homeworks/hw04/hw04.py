@@ -103,28 +103,17 @@ def has_path(t, word):
     """
     assert len(word) > 0, 'no path for empty word.'
 
-    def helper(t, word):
-        if word == "":
-            return True
+    if label(t) != word[0]:
+        return False
 
-        if label(t) != word[0]:
-            return False
-
-        if is_leaf(t) and len(word) > 1:
-            return False
-
-        if is_leaf(t):
-            return True
+    if len(word) == 1:
+        return True
         
-        result = False
-        for branch in branches(t):
-            if helper(branch, word[1:]):
-                result = True
-                break
+    for branch in branches(t):
+        if has_path(branch, word[1:]):
+            return True
 
-        return result
-    
-    return helper(t, word)
+    return False
 
 
 # Tree ADT
