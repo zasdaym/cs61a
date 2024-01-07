@@ -38,13 +38,11 @@ def deep_map_mut(func, lst):
     >>> s3 is s2[1]
     True
     """
-    i = 0
-    while i < len(lst):
+    for i in range(len(lst)):
         if type(lst[i]) is not list:
             lst[i] = func(lst[i])
         else:
             deep_map_mut(func, lst[i])
-        i += 1
 
 
 HW_SOURCE_FILE=__file__
